@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                clifford: '#da373d',
+              }
+            }
+          }
+        }
+      </script>
+    <title>URL SHORTENER</title>
+</head>
+<body class="h-screen  bg-cyan-100">
+    <h1 class="text-4xl text-white-600 text-center p-4 font-poppins bg-yellow-400">URL SHORTENER</h1>
+    <form action="/shortUrls" method="POST" class="text-center p-3 m-3 items-center">
+        <input type="text" name="fullUrl" id="fullUrl" class="p-2 border-2  rounded-lg border-black placeholder:items-center text-center" placeholder="Enter URL">
+        <button type="submit" class=" rounded text-green bg-green-400 p-2"value="Add">Shorten Url</button>
+    </form>
+    <% let page = 1; %>
+    <% const pageSize = 5; %>
+    <% const pageCount = Math.ceil(shortUrls.length / pageSize); %>
+    
+    <h3 class="animate-pulse text-center font-semibold text-2xl py-3">ALL URLS ARE GIVEN BELOW IN THEIR SHORTENED FORM</h3>
+    <table class="table-auto w-full border-collapse border border-gray-400">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="px-4 py-2 text-left text-blue">Delete</th>
+          <th class="px-4 py-2 text-left text-blue">Update</th>
+          <th class="px-4 py-2 text-left text-blue">Short URL</th>
+          <th class="px-4 py-2 text-left text-blue">Full URL</th>
+          <th class="px-4 py-2 text-left text-blue">Clicks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% const startIndex = (page - 1) * pageSize; %>
+        <% const endIndex = startIndex + pageSize; %>
+        <% const urlsToDisplay = shortUrls.slice(startIndex, endIndex); %>
+        <% urlsToDisplay.forEach((shortUrl) => { %>
+          <tr class="m-2 bg--200">
+            <td>
+              <form action="/shortUrls/<%= shortUrl._id %>" method="POST">
+                <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" value="Delete">Delete</button>
+              </form>
+            </td>
+            <td>
+              <form action="/shortUrls/<%= shortUrl._id %>" method="POST">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" value="Update">Update</button>
+              </form>
+            </td>
+            <td class="border px-4 py-2 text-yellow-600"><a href="<%= shortUrl.short %>"><%= shortUrl.short %></a></td>
+            <td class="border px-4 py-2"><a href="<%= shortUrl.full %>"><%= shortUrl.full %></a></td>
+            <td class="border px-4 py-2"><a href="<%= shortUrl.clicks %>"><%= shortUrl.clicks %></a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <div class="flex justify-center items-center my-2">
+      <% for (let i = 1; i <= pageCount; i++) { %>
+        <% if (page === i) { %>
+          <a href="?page=<%= i %>" class="mx-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"><%= i %></a>
+        <% } else { %>
+          <a href="?page=<%= i %>" class="mx-1 bg-gray-300 hover:bg-gray-500 text-blue-800 font-bold py-1 px-2 rounded"><%= i %></a>
+        <% } %>
+      <% } %>
+    </div>
+
+</body>
+</html>
